@@ -146,7 +146,7 @@ const Icono = ({ tipo, size = 20 }) => {
    ============================================================================ */
 const Img = ({ src, alt, grad, children }) => {
   const [err, setErr] = useState(false);
-  const fullSrc = src ? BASE + src.replace(/^\//, '') : '';
+  const fullSrc = src ? (import.meta.env.BASE_URL || '/') + src.replace(/^\//, '') : '';
   return (
     <div style={{ position: "relative", width: "100%", height: "100%", background: grad }}>
       {!err && fullSrc && <img src={fullSrc} alt={alt} onError={() => setErr(true)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 1 }} />}
@@ -154,6 +154,7 @@ const Img = ({ src, alt, grad, children }) => {
     </div>
   );
 };
+
 
 /* ============================================================================
    BLOQUE 0.5: COMPONENTE LIGHTBOX
