@@ -1,55 +1,44 @@
 
 /* ============================================================================
-   LAURA CRAVIOTO — PORTAFOLIO WEB (v3.3)
-   Escultura e investigación en vidrio
+   LAURA CRAVIOTO — PORTAFOLIO WEB (v3.4 — FIX GALERÍA)
    
-   v3.3 Cambios:
-   - Redes sociales actualizadas: Instagram, Facebook, TikTok (nuevo ícono)
-   - Formulario integrado con Formspree (envía a atmanwolf@gmail.com)
-   - El correo de Laura NO se expone en el código visible al usuario
-   - Botón "Inscribirse" ahora lleva al formulario de contacto
-   
-   CONFIGURACIÓN FORMSPREE (PASO ÚNICO):
-   1. Ve a https://formspree.io y crea una cuenta gratuita
-   2. Crea un nuevo formulario y usa el email: atmanwolf@gmail.com
-   3. Formspree te dará un ID (ejemplo: "xyzabcde")
-   4. Reemplaza "TU_ID_AQUI" en la constante FORMSPREE_ID de abajo
-   5. ¡Listo! Los formularios llegarán al correo sin exponerlo
+   v3.4: Fix de imágenes en Galería para GitHub Pages
+   - Componente Img corregido con BASE_URL
+   - Lightbox corregido con BASE_URL
+   - Todas las imágenes usan rutas relativas al base path
    ============================================================================ */
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-const BASE = import.meta.env.BASE_URL;
+
+/* --- Base URL para GitHub Pages --- */
+const BASE = import.meta.env.BASE_URL || '/';
 
 /* ============================================================================
    BLOQUE 0: CONFIGURACIÓN CENTRAL
    ============================================================================ */
-
-/* --- Formspree: reemplaza TU_ID_AQUI con tu ID real --- */
 const FORMSPREE_ID = "xaqzvwnq";
 const FORMSPREE_URL = `https://formspree.io/f/${FORMSPREE_ID}`;
 
-/* --- Imágenes --- */
 const IMAGENES = {
-  portada: { archivo: "/Galeria/1_Portada/hero-bg.jpg", alt: "Escultura de vidrio" },
-  taller: { archivo: "/Galeria/2_Filosofia/1 Laura - Taller.jpg", alt: "Laura Cravioto trabajando vidrio a la flama en su taller" },
+  portada: { archivo: "Galeria/1_Portada/hero-bg.jpg", alt: "Escultura de vidrio" },
+  taller: { archivo: "Galeria/2_Filosofia/1 Laura - Taller.jpg", alt: "Laura Cravioto trabajando vidrio a la flama en su taller" },
   obras: [
-    { archivo: "/Galeria/3_Obra/Laura - Arte 4.jpeg", alt: "Instalación escultórica de múltiples piezas orgánicas de vidrio" },
-    { archivo: "/Galeria/3_Obra/Laura - Arte 2.jpeg", alt: "Escultura orgánica de vidrio en tonos ámbar y verde" },
-    { archivo: "/Galeria/3_Obra/Laura - Arte 3.jpeg", alt: "Escultura de vidrio multicolor con formas orgánicas fluidas" },
-    { archivo: "/Galeria/3_Obra/Laura - Arte 1.jpeg", alt: "Escultura geométrica de tubos de vidrio transparente" },
-    { archivo: "/Galeria/3_Obra/Laura - Arte 5.jpeg", alt: "Forma ovoide minimalista de vidrio soplado" },
-    { archivo: "/Galeria/3_Obra/Laura - Arte 1 - gargantilla 1.jpg", alt: "Gargantilla escultórica de vidrio azul cobalto" },
-    { archivo: "/Galeria/3_Obra/Laura - Arte - Aretes 1.jpg", alt: "Aretes de vidrio verde translúcido" },
+    { archivo: "Galeria/3_Obra/Laura - Arte 4.jpeg", alt: "Instalación escultórica de múltiples piezas orgánicas de vidrio" },
+    { archivo: "Galeria/3_Obra/Laura - Arte 2.jpeg", alt: "Escultura orgánica de vidrio en tonos ámbar y verde" },
+    { archivo: "Galeria/3_Obra/Laura - Arte 3.jpeg", alt: "Escultura de vidrio multicolor con formas orgánicas fluidas" },
+    { archivo: "Galeria/3_Obra/Laura - Arte 1.jpeg", alt: "Escultura geométrica de tubos de vidrio transparente" },
+    { archivo: "Galeria/3_Obra/Laura - Arte 5.jpeg", alt: "Forma ovoide minimalista de vidrio soplado" },
+    { archivo: "Galeria/3_Obra/Laura - Arte 1 - gargantilla 1.jpg", alt: "Gargantilla escultórica de vidrio azul cobalto" },
+    { archivo: "Galeria/3_Obra/Laura - Arte - Aretes 1.jpg", alt: "Aretes de vidrio verde translúcido" },
   ],
   talleres: [
-    { archivo: "/Galeria/4_Talleres/taller-1.jpg", alt: "Momento en el taller" },
-    { archivo: "/Galeria/4_Talleres/taller-2.jpg", alt: "Estudiantes trabajando" },
-    { archivo: "/Galeria/4_Talleres/taller-3.jpg", alt: "Herramientas del taller" },
-    { archivo: "/Galeria/4_Talleres/taller-4.jpg", alt: "Resultados de alumnos" },
+    { archivo: "Galeria/4_Talleres/taller-1.jpg", alt: "Momento en el taller" },
+    { archivo: "Galeria/4_Talleres/taller-2.jpg", alt: "Estudiantes trabajando" },
+    { archivo: "Galeria/4_Talleres/taller-3.jpg", alt: "Herramientas del taller" },
+    { archivo: "Galeria/4_Talleres/taller-4.jpg", alt: "Resultados de alumnos" },
   ],
 };
 
-/* --- Galería completa para lightbox --- */
 const GALERIA_COMPLETA = [
   { archivo: IMAGENES.taller.archivo, alt: IMAGENES.taller.alt, titulo: "En el taller", categoria: "Proceso" },
   ...IMAGENES.obras.map((img, i) => ({
@@ -59,7 +48,6 @@ const GALERIA_COMPLETA = [
   })),
 ];
 
-/* --- Redes Sociales: links actualizados con TikTok --- */
 const REDES_SOCIALES = [
   { tipo: "instagram", url: "https://www.instagram.com/laura_cravioto_ep?igsh=dm1rdWRmNHJzaGxm&utm_source=qr" },
   { tipo: "facebook", url: "https://www.facebook.com/share/1Dr79r5XuS/?mibextid=wwXIfr" },
@@ -119,13 +107,11 @@ const C = { bh: "#F6F6F4", gc: "#E3E4E6", gmc: "#C7C9CC", gm: "#8E9096", co: "#2
 
 /* ============================================================================
    BLOQUE 0.3: COMPONENTE DE ÍCONO SVG
-   Incluye nuevo ícono de TikTok
    ============================================================================ */
 const Icono = ({ tipo, size = 20 }) => {
   const i = {
     instagram: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>,
     facebook: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>,
-    /* --- NUEVO: Ícono de TikTok --- */
     tiktok: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>,
     email: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>,
     menu: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>,
@@ -142,22 +128,29 @@ const Icono = ({ tipo, size = 20 }) => {
 };
 
 /* ============================================================================
-   BLOQUE 0.4: IMAGEN CON FALLBACK
+   BLOQUE 0.4: IMAGEN CON FALLBACK — CORREGIDO PARA GITHUB PAGES
+   Usa BASE para construir la ruta completa de cada imagen
    ============================================================================ */
 const Img = ({ src, alt, grad, children }) => {
   const [err, setErr] = useState(false);
-  const fullSrc = src ? (import.meta.env.BASE_URL || '/') + src.replace(/^\//, '') : '';
+  const fullSrc = src ? BASE + src : '';
   return (
     <div style={{ position: "relative", width: "100%", height: "100%", background: grad }}>
-      {!err && fullSrc && <img src={fullSrc} alt={alt} onError={() => setErr(true)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 1 }} />}
+      {!err && fullSrc && (
+        <img
+          src={fullSrc}
+          alt={alt}
+          onError={() => setErr(true)}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 1 }}
+        />
+      )}
       {(err || !fullSrc) && children}
     </div>
   );
 };
 
-
 /* ============================================================================
-   BLOQUE 0.5: COMPONENTE LIGHTBOX
+   BLOQUE 0.5: COMPONENTE LIGHTBOX — CORREGIDO PARA GITHUB PAGES
    ============================================================================ */
 const Lightbox = ({ imagenes, indice, onCerrar, onAnterior, onSiguiente, textosDe }) => {
   useEffect(() => {
@@ -167,12 +160,13 @@ const Lightbox = ({ imagenes, indice, onCerrar, onAnterior, onSiguiente, textosD
     return () => { document.body.style.overflow = ""; window.removeEventListener("keydown", handleKey); };
   }, [onCerrar, onAnterior, onSiguiente]);
   const img = imagenes[indice];
+  const lightboxSrc = BASE + img.archivo;
   return (
     <div onClick={onCerrar} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.92)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.3s" }}>
       <button onClick={onCerrar} style={{ position: "absolute", top: "1.5rem", right: "1.5rem", background: "none", border: "none", color: C.gmc, cursor: "pointer", zIndex: 10, padding: "8px" }}><Icono tipo="close" size={28} /></button>
       <button onClick={(e) => { e.stopPropagation(); onAnterior(); }} style={{ position: "absolute", left: "clamp(0.5rem,2vw,2rem)", background: "rgba(255,255,255,0.08)", border: "none", color: C.bh, cursor: "pointer", borderRadius: "50%", width: "48px", height: "48px", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10 }}><Icono tipo="chevronL" size={24} /></button>
       <div onClick={(e) => e.stopPropagation()} style={{ maxWidth: "85vw", maxHeight: "80vh", display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
-        <img src={BASE + img.archivo.replace(/^\//, '')} alt={img.alt} style={{ maxWidth: "85vw", maxHeight: "72vh", objectFit: "contain", borderRadius: "4px", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }} />
+        <img src={lightboxSrc} alt={img.alt} style={{ maxWidth: "85vw", maxHeight: "72vh", objectFit: "contain", borderRadius: "4px", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }} />
         <div style={{ textAlign: "center" }}>
           <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "1.3rem", fontWeight: 400, color: C.bh, marginBottom: "4px" }}>{img.titulo}</p>
           <p style={{ fontSize: "0.75rem", color: C.gm, letterSpacing: "0.1em", textTransform: "uppercase" }}>{img.categoria} — {indice + 1} {textosDe} {imagenes.length}</p>
@@ -193,8 +187,7 @@ export default function App() {
   const [idiomaAbierto, setIdiomaAbierto] = useState(false);
   const [seccionActiva, setSeccionActiva] = useState("inicio");
   const [formData, setFormData] = useState({ nombre: "", email: "", asunto: "", mensaje: "" });
-  /* --- Estados del formulario con Formspree --- */
-  const [formEstado, setFormEstado] = useState("idle"); // idle | enviando | enviado | error
+  const [formEstado, setFormEstado] = useState("idle");
 
   const [lightboxAbierto, setLightboxAbierto] = useState(false);
   const [lightboxIndice, setLightboxIndice] = useState(0);
@@ -212,7 +205,6 @@ export default function App() {
 
   const scrollHacia = (s) => { setMenuAbierto(false); seccionesRef[s]?.current?.scrollIntoView({ behavior: "smooth" }); };
 
-  /* --- Función: Envío de formulario vía Formspree --- */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormEstado("enviando");
@@ -220,19 +212,10 @@ export default function App() {
       const response = await fetch(FORMSPREE_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({
-          nombre: formData.nombre,
-          email: formData.email,
-          asunto: formData.asunto,
-          mensaje: formData.mensaje,
-          _subject: `[Web Laura Cravioto] ${formData.asunto}`,
-        }),
+        body: JSON.stringify({ nombre: formData.nombre, email: formData.email, asunto: formData.asunto, mensaje: formData.mensaje, _subject: `[Web Laura Cravioto] ${formData.asunto}` }),
       });
-      if (response.ok) {
-        setFormEstado("enviado");
-        setFormData({ nombre: "", email: "", asunto: "", mensaje: "" });
-        setTimeout(() => setFormEstado("idle"), 4000);
-      } else { setFormEstado("error"); setTimeout(() => setFormEstado("idle"), 4000); }
+      if (response.ok) { setFormEstado("enviado"); setFormData({ nombre: "", email: "", asunto: "", mensaje: "" }); setTimeout(() => setFormEstado("idle"), 4000); }
+      else { setFormEstado("error"); setTimeout(() => setFormEstado("idle"), 4000); }
     } catch { setFormEstado("error"); setTimeout(() => setFormEstado("idle"), 4000); }
   };
 
@@ -254,7 +237,6 @@ export default function App() {
   const si = { width: "100%", padding: "12px 16px", background: C.bh, border: `1px solid ${C.gmc}`, borderRadius: "3px", fontSize: "0.95rem", color: C.co, fontFamily: "'Inter',sans-serif", outline: "none", transition: "border-color 0.3s" };
   const sl = { display: "block", fontSize: "0.75rem", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: C.gm, marginBottom: "6px" };
 
-  /* --- Color y texto del botón según estado --- */
   const btnFormConfig = {
     idle: { bg: C.co, texto: t.contacto.btnEnviar, icono: "arrow" },
     enviando: { bg: C.gm, texto: t.contacto.enviando, icono: null },
@@ -376,7 +358,7 @@ export default function App() {
             <style>{`@media(max-width:768px){.gg{grid-template-columns:repeat(2,1fr)!important}}.gt{position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;cursor:pointer;transition:transform 0.3s,box-shadow 0.3s}.gt:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.1)}.gt:first-child{grid-column:span 2;grid-row:span 2;aspect-ratio:auto}@media(max-width:768px){.gt:first-child{grid-column:span 2;grid-row:span 1;aspect-ratio:16/10}}.gt .gt-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(47,48,51,0.6) 0%,transparent 50%);opacity:0;transition:opacity 0.3s;z-index:2;display:flex;align-items:flex-end;padding:1rem}.gt:hover .gt-overlay{opacity:1}`}</style>
             {GALERIA_COMPLETA.map((img, i) => (
               <div key={i} className="gt" onClick={() => abrirLightbox(i)}>
-                <Img src={BASE + img.archivo.replace(/^\//, '')} alt={img.alt} grad={go[i % go.length]}><div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: C.gm, fontSize: "1.5rem" }}>◈</div></Img>
+                <Img src={img.archivo} alt={img.alt} grad={go[i % go.length]}><div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: C.gm, fontSize: "1.5rem" }}>◈</div></Img>
                 <div className="gt-overlay"><div><p style={{ fontSize: "0.65rem", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.gmc, marginBottom: "4px" }}>{img.categoria}</p><p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "1.1rem", fontWeight: 400, color: C.bh }}>{img.titulo}</p></div></div>
                 <div style={{ position: "absolute", top: "8px", right: "8px", background: "rgba(47,48,51,0.4)", borderRadius: "50%", width: "30px", height: "30px", display: "flex", alignItems: "center", justifyContent: "center", color: C.bh, zIndex: 3, opacity: 0.6 }}><Icono tipo="expand" size={14} /></div>
               </div>
@@ -405,14 +387,13 @@ export default function App() {
             ))}
           </div>
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-            {/* --- Inscribirse ahora lleva al formulario de contacto --- */}
             <button onClick={() => scrollHacia("contacto")} style={{ padding: "14px 32px", background: C.co, color: C.bh, border: "none", borderRadius: "2px", fontSize: "0.8rem", fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>{t.talleres.btnInscribirse} <Icono tipo="arrow" size={16} /></button>
             <button onClick={() => scrollHacia("contacto")} style={{ padding: "14px 32px", background: "transparent", color: C.co, border: `1px solid ${C.gmc}`, borderRadius: "2px", fontSize: "0.8rem", fontWeight: 400, letterSpacing: "0.15em", textTransform: "uppercase", cursor: "pointer" }}>{t.talleres.btnFechas}</button>
           </div>
         </div>
       </section>
 
-      {/* ====== CONTACTO — Formulario con Formspree ====== */}
+      {/* ====== CONTACTO ====== */}
       <section ref={seccionesRef.contacto} style={{ padding: "clamp(4rem,10vw,8rem) clamp(1.5rem,5vw,4rem)", background: C.gc }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <p style={{ fontSize: "0.75rem", fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: C.gm, marginBottom: "3rem" }}>{t.contacto.etiqueta}</p>
@@ -422,7 +403,6 @@ export default function App() {
               <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(2rem,4vw,2.8rem)", fontWeight: 300, color: C.co, lineHeight: 1.15, marginBottom: "2rem" }}>{t.contacto.tituloBio}</h2>
               <p style={{ fontSize: "0.95rem", fontWeight: 300, color: C.co, lineHeight: 1.8, marginBottom: "1.5rem", ...ep }}>{t.contacto.bio1}</p>
               <p style={{ fontSize: "0.95rem", fontWeight: 300, color: C.gm, lineHeight: 1.8, marginBottom: "2.5rem", ...ep }}>{t.contacto.bio2}</p>
-              {/* --- Redes Sociales: Instagram, Facebook, TikTok --- */}
               <div>
                 <p style={{ fontSize: "0.7rem", fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: C.gm, marginBottom: "1rem" }}>Social</p>
                 <div style={{ display: "flex", gap: "1rem" }}>
@@ -435,19 +415,12 @@ export default function App() {
             <div>
               <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "1.6rem", fontWeight: 400, color: C.co, marginBottom: "0.5rem" }}>{t.contacto.tituloForm}</h3>
               <p style={{ fontSize: "0.9rem", fontWeight: 300, color: C.gm, lineHeight: 1.6, marginBottom: "2rem", ...ep }}>{t.contacto.formDesc}</p>
-              {/* --- Formulario: envía a atmanwolf@gmail.com vía Formspree --- */}
               <form onSubmit={handleSubmit}>
                 <div style={{ marginBottom: "1.2rem" }}><label style={sl}>{t.contacto.nombre}</label><input type="text" required value={formData.nombre} onChange={e => setFormData({ ...formData, nombre: e.target.value })} style={si} onFocus={e => e.target.style.borderColor = C.gm} onBlur={e => e.target.style.borderColor = C.gmc} disabled={formEstado === "enviando"} /></div>
                 <div style={{ marginBottom: "1.2rem" }}><label style={sl}>{t.contacto.email}</label><input type="email" required value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} style={si} onFocus={e => e.target.style.borderColor = C.gm} onBlur={e => e.target.style.borderColor = C.gmc} disabled={formEstado === "enviando"} /></div>
                 <div style={{ marginBottom: "1.2rem" }}><label style={sl}>{t.contacto.asunto}</label><select required value={formData.asunto} onChange={e => setFormData({ ...formData, asunto: e.target.value })} style={{ ...si, cursor: "pointer", appearance: "none" }} onFocus={e => e.target.style.borderColor = C.gm} onBlur={e => e.target.style.borderColor = C.gmc} disabled={formEstado === "enviando"}><option value="">—</option>{t.contacto.asuntoOpciones.map((o, i) => <option key={i} value={o}>{o}</option>)}</select></div>
                 <div style={{ marginBottom: "1.5rem" }}><label style={sl}>{t.contacto.mensaje}</label><textarea required rows={5} value={formData.mensaje} onChange={e => setFormData({ ...formData, mensaje: e.target.value })} style={{ ...si, resize: "vertical" }} onFocus={e => e.target.style.borderColor = C.gm} onBlur={e => e.target.style.borderColor = C.gmc} disabled={formEstado === "enviando"} /></div>
-                <button type="submit" disabled={formEstado === "enviando"} style={{
-                  width: "100%", padding: "14px 32px", background: btnFormConfig.bg,
-                  color: C.bh, border: "none", borderRadius: "3px", fontSize: "0.8rem", fontWeight: 500,
-                  letterSpacing: "0.15em", textTransform: "uppercase", cursor: formEstado === "enviando" ? "wait" : "pointer",
-                  transition: "all 0.3s", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
-                  animation: formEstado === "enviando" ? "pulse 1.5s infinite" : "none",
-                }}>
+                <button type="submit" disabled={formEstado === "enviando"} style={{ width: "100%", padding: "14px 32px", background: btnFormConfig.bg, color: C.bh, border: "none", borderRadius: "3px", fontSize: "0.8rem", fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", cursor: formEstado === "enviando" ? "wait" : "pointer", transition: "all 0.3s", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", animation: formEstado === "enviando" ? "pulse 1.5s infinite" : "none" }}>
                   {btnFormConfig.texto}
                   {btnFormConfig.icono && <Icono tipo={btnFormConfig.icono} size={16} />}
                 </button>
