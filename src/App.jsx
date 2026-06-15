@@ -1,24 +1,20 @@
 
 /* ============================================================================
-   LAURA CRAVIOTO — PORTAFOLIO WEB (v3.4 — FIX GALERÍA)
+   LAURA CRAVIOTO — PORTAFOLIO WEB (v3.5)
    
-   v3.4: Fix de imágenes en Galería para GitHub Pages
-   - Componente Img corregido con BASE_URL
-   - Lightbox corregido con BASE_URL
-   - Todas las imágenes usan rutas relativas al base path
+   v3.5: 16 obras + 7 talleres + textos primera persona + fix rutas
    ============================================================================ */
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 
-/* --- Base URL para GitHub Pages --- */
 const BASE = import.meta.env.BASE_URL || '/';
 
-/* ============================================================================
-   BLOQUE 0: CONFIGURACIÓN CENTRAL
-   ============================================================================ */
 const FORMSPREE_ID = "xaqzvwnq";
 const FORMSPREE_URL = `https://formspree.io/f/${FORMSPREE_ID}`;
 
+/* ============================================================================
+   BLOQUE 0: IMÁGENES — 16 obras + 7 talleres
+   ============================================================================ */
 const IMAGENES = {
   portada: { archivo: "Galeria/1_Portada/hero-bg.jpg", alt: "Escultura de vidrio" },
   taller: { archivo: "Galeria/2_Filosofia/1 Laura - Taller.jpg", alt: "Laura Cravioto trabajando vidrio a la flama en su taller" },
@@ -30,21 +26,37 @@ const IMAGENES = {
     { archivo: "Galeria/3_Obra/Laura - Arte 5.jpeg", alt: "Forma ovoide minimalista de vidrio soplado" },
     { archivo: "Galeria/3_Obra/Laura - Arte 1 - gargantilla 1.jpg", alt: "Gargantilla escultórica de vidrio azul cobalto" },
     { archivo: "Galeria/3_Obra/Laura - Arte - Aretes 1.jpg", alt: "Aretes de vidrio verde translúcido" },
+    { archivo: "Galeria/3_Obra/Laura - Arte 6.jpeg", alt: "Escultura orgánica de vidrio con formas vegetales translúcidas" },
+    { archivo: "Galeria/3_Obra/Laura - Arte 7.jpeg", alt: "Pieza de vidrio con extensiones delicadas en verde y ámbar" },
+    { archivo: "Galeria/3_Obra/Laura - Arte 8.jpeg", alt: "Composición escultórica de vidrio en tonos cálidos" },
+    { archivo: "Galeria/3_Obra/Laura - Arte 9.jpeg", alt: "Forma ovoide oscura de vidrio soplado con reflejos metálicos" },
+    { archivo: "Galeria/3_Obra/Laura - Arte 10.jpeg", alt: "Escultura translúcida de vidrio con forma orgánica etérea" },
+    { archivo: "Galeria/3_Obra/Laura - Arte 11.jpeg", alt: "Pieza experimental de vidrio con texturas punteadas" },
+    { archivo: "Galeria/3_Obra/Laura - Arte 12.jpeg", alt: "Forma orgánica de vidrio evocando crecimiento natural" },
+    { archivo: "Galeria/3_Obra/Laura - Arte 13.jpeg", alt: "Pequeña escultura de vidrio en tonos ámbar y dorado" },
+    { archivo: "Galeria/3_Obra/Laura - Arte 14.jpeg", alt: "Esfera de vidrio oscuro con superficie reflectante" },
   ],
   talleres: [
-    { archivo: "Galeria/4_Talleres/taller-1.jpg", alt: "Momento en el taller" },
-    { archivo: "Galeria/4_Talleres/taller-2.jpg", alt: "Estudiantes trabajando" },
-    { archivo: "Galeria/4_Talleres/taller-3.jpg", alt: "Herramientas del taller" },
-    { archivo: "Galeria/4_Talleres/taller-4.jpg", alt: "Resultados de alumnos" },
+    { archivo: "Galeria/4_Talleres/Taller_1.jpeg", alt: "Taller de vidrio a la flama — espacio de trabajo" },
+    { archivo: "Galeria/4_Talleres/Taller_2.jpeg", alt: "Alumnas concentradas trabajando con vidrio lampwork" },
+    { archivo: "Galeria/4_Talleres/Taller_3.jpeg", alt: "Proceso de experimentación guiada en el taller" },
+    { archivo: "Galeria/4_Talleres/Taller_4.jpeg", alt: "Vista del espacio del taller rodeado de naturaleza" },
+    { archivo: "Galeria/4_Talleres/Taller_5.jpeg", alt: "Pieza de vidrio multicolor creada en taller" },
+    { archivo: "Galeria/4_Talleres/Taller_6.jpeg", alt: "Alumnas aprendiendo técnicas de vidrio a la flama" },
+    { archivo: "Galeria/4_Talleres/Taller_7.jpeg", alt: "Detalle de trabajo manual con vidrio fundido" },
   ],
 };
+
+const TITULOS_OBRAS = ["Ecosistema", "Simbiosis I", "Simbiosis II", "Tensiones Estructurales", "Memoria del Humo", "Coral Azul", "Círculos de Luz", "Brote", "Raíces Aéreas", "Fusión Cálida", "Eclipse", "Suspensión", "Constelación Orgánica", "Germinación", "Ámbar Vivo", "Esfera Nocturna"];
+const CATEGORIAS_OBRAS = ["Instalación", "Escultura", "Escultura", "Vidrio y metal", "Vidrio soplado", "Joyería", "Joyería", "Escultura", "Escultura", "Escultura", "Vidrio soplado", "Escultura", "Experimental", "Escultura", "Escultura", "Vidrio soplado"];
 
 const GALERIA_COMPLETA = [
   { archivo: IMAGENES.taller.archivo, alt: IMAGENES.taller.alt, titulo: "En el taller", categoria: "Proceso" },
   ...IMAGENES.obras.map((img, i) => ({
-    archivo: img.archivo, alt: img.alt,
-    titulo: ["Ecosistema", "Simbiosis I", "Simbiosis II", "Tensiones Estructurales", "Memoria del Humo", "Coral Azul", "Círculos de Luz"][i],
-    categoria: ["Instalación", "Escultura", "Escultura", "Vidrio y metal", "Vidrio soplado", "Joyería", "Joyería"][i],
+    archivo: img.archivo,
+    alt: img.alt,
+    titulo: TITULOS_OBRAS[i] || `Obra ${i + 1}`,
+    categoria: CATEGORIAS_OBRAS[i] || "Escultura",
   })),
 ];
 
@@ -55,59 +67,53 @@ const REDES_SOCIALES = [
 ];
 
 /* ============================================================================
-   BLOQUE 0.1: INTERNACIONALIZACIÓN (i18n)
+   BLOQUE 0.1: i18n — Textos en PRIMERA PERSONA
    ============================================================================ */
 const translations = {
   es: {
     nav: { inicio: "Inicio", storytelling: "Historia", filosofia: "Filosofía", obra: "Obra", galeria: "Galería", talleres: "Talleres", contacto: "Contacto" },
     hero: { titulo: "Laura Cravioto", subtitulo: "Escultura e investigación en vidrio", descripcion: "El vidrio como territorio de exploración donde la materia se transforma, muta y respira con la luz.", btnObra: "Explorar Obra", btnTalleres: "Talleres a la Flama" },
-    storytelling: { etiqueta: "Storytelling", titulo: "El instante líquido", epigrafe: "Hay un instante —apenas un segundo— en que el vidrio deja de ser sólido y aún no es líquido.", epigrafe2: "Un instante donde la materia suspende sus propias reglas.", epigrafe3: "Laura Cravioto trabaja exactamente ahí.", parrafo1: "En un taller del barrio mágico de Jalatlaco, en la ciudad de Oaxaca, donde el silencio solo lo rompe el rugido de la flama, una varilla de vidrio gira entre sus dedos. El calor la envuelve. El material responde: se estira, se curva, burbujea, respira. No hay boceto que sobreviva intacto a ese diálogo. Porque el vidrio no obedece — negocia.", parrafo2: "Y Laura aprendió a escucharlo.", parrafo3: "Su camino no comenzó en una academia ni en un horno. Comenzó con una pregunta que todavía no termina de responder: ¿qué ocurre cuando dejamos de imponer forma a la materia y empezamos a conversar con ella?", parrafo4: "Esa pregunta la llevó del dibujo a la pintura, de la pintura a la escultura, de la escultura a la instalación. Cada disciplina fue un idioma nuevo para formular la misma obsesión: entender cómo crece, muta y se transforma lo vivo.", parrafo5: "Hasta que encontró el vidrio.", parrafo6: "Un material que guarda la luz dentro de sí. Que recuerda cada gesto del fuego. Que puede parecer frágil y ser inquebrantable." },
+    storytelling: { etiqueta: "Storytelling", titulo: "El instante líquido", epigrafe: "Hay un instante —apenas un segundo— en que el vidrio deja de ser sólido y aún no es líquido.", epigrafe2: "Un instante donde la materia suspende sus propias reglas.", epigrafe3: "Trabajo exactamente ahí.", parrafo1: "En un taller del barrio mágico de Jalatlaco, en la ciudad de Oaxaca, donde el silencio solo lo rompe el rugido de la flama, una varilla de vidrio gira entre mis dedos. El calor me envuelve. El material responde: se estira, se curva, burbujea, respira. No hay boceto que sobreviva intacto a ese diálogo. Porque el vidrio no obedece — negocia.", parrafo2: "Y aprendí a escucharlo.", parrafo3: "Mi camino no comenzó en una academia ni en un horno. Comenzó con una pregunta que todavía no termino de responder: ¿qué ocurre cuando dejamos de imponer forma a la materia y empezamos a conversar con ella?", parrafo4: "Esa pregunta me llevó del dibujo a la pintura, de la pintura a la escultura, de la escultura a la instalación. Cada disciplina fue un idioma nuevo para formular la misma obsesión: entender cómo crece, muta y se transforma lo vivo.", parrafo5: "Hasta que encontré el vidrio.", parrafo6: "Un material que guarda la luz dentro de sí. Que recuerda cada gesto del fuego. Que puede parecer frágil y ser inquebrantable." },
     statement: { etiqueta: "Filosofía", titulo: "La materia como organismo vivo", parrafo1: "Mi trabajo se desarrolla principalmente a través del vidrio, material que utilizo como un medio de investigación formal, técnica y conceptual.", parrafo2: "A través de la escultura, la instalación y la intervención espacial, construyo formas orgánicas y abstractas que evocan procesos de crecimiento, mutación, adaptación y permanencia.", parrafo3: "Gran parte de mi trabajo surge de cruces entre las artes, las ciencias y los procesos naturales. El vidrio se ha convertido en el vehículo principal de esta búsqueda.", caption: "En el taller, trabajando a la flama" },
     proyectos: { etiqueta: "Obra", titulo: "Proyectos Destacados", subtitulo: "Escultura, instalación, joyería escultórica e intervención espacial.", obras: [{ titulo: "Ecosistema", año: "2024", categoria: "Instalación escultórica" }, { titulo: "Simbiosis I", año: "2024", categoria: "Escultura en vidrio a la flama" }, { titulo: "Simbiosis II", año: "2024", categoria: "Escultura en vidrio a la flama" }, { titulo: "Tensiones Estructurales", año: "2023", categoria: "Escultura en vidrio y metal" }, { titulo: "Memoria del Humo", año: "2023", categoria: "Vidrio soplado" }, { titulo: "Coral Azul", año: "2024", categoria: "Joyería escultórica" }, { titulo: "Círculos de Luz", año: "2024", categoria: "Joyería en vidrio lampwork" }] },
     galeria: { etiqueta: "Galería", titulo: "Universo Visual", subtitulo: "Un recorrido por el proceso, la materia y las piezas terminadas. Haz clic en cualquier imagen para ampliarla.", cerrar: "Cerrar", de: "de" },
     talleres: { etiqueta: "Talleres", titulo: "El Laboratorio de Vidrio", subtitulo: "La pedagogía como extensión fundamental de la labor artística.", descripcion: "Los talleres de vidrio a la flama son un espacio de experimentación guiada donde cada participante descubre su propio diálogo con la materia.", items: [{ titulo: "Iniciación a la Flama", desc: "Técnicas fundamentales de vidrio lampwork. Sin experiencia previa.", duracion: "8 sesiones" }, { titulo: "Escultura Experimental", desc: "Exploración formal avanzada.", duracion: "12 sesiones" }, { titulo: "Taller Intensivo", desc: "Inmersión completa de fin de semana.", duracion: "2 días" }], btnInscribirse: "Inscribirse", btnFechas: "Ver próximas fechas", galeriaTitulo: "Momentos en el taller" },
-    contacto: { etiqueta: "Contacto", tituloBio: "Biografía", bio1: "Laura Cravioto es una artista mexicana cuya práctica se centra en el vidrio como medio de investigación y expresión. Su formación ha sido autodidacta, construida a partir de la experimentación constante.", bio2: "Actualmente combina la producción artística con la impartición de talleres de vidrio a la flama, considerando la pedagogía una extensión fundamental de su labor.", tituloForm: "Colaboraciones y Consultas", formDesc: "¿Interesado en adquirir obra, inscribirte a un taller o conocer más? Escríbeme.", nombre: "Nombre", email: "Correo electrónico", asunto: "Asunto", asuntoOpciones: ["Adquisición de obra", "Colaboración artística", "Inscripción a taller", "Información de talleres", "Joyería artística", "Otro"], mensaje: "Mensaje", btnEnviar: "Enviar mensaje", enviando: "Enviando...", enviado: "¡Mensaje enviado!", errorEnvio: "Error al enviar. Intenta de nuevo.", derechos: "Todos los derechos reservados." },
+    contacto: { etiqueta: "Contacto", tituloBio: "Biografía", bio1: "Soy una artista mexicana cuya práctica se centra en el vidrio como medio de investigación y expresión. Mi formación ha sido autodidacta, construida a partir de la experimentación constante y el aprendizaje continuo.", bio2: "Actualmente combino la producción artística con la impartición de talleres de vidrio a la flama. Considero la pedagogía una extensión fundamental de mi labor, encontrando en la enseñanza una forma de compartir conocimientos, fomentar la curiosidad y contribuir a la formación de nuevas generaciones de creadores.", tituloForm: "Colaboraciones y Consultas", formDesc: "¿Interesado en adquirir obra, inscribirte a un taller o conocer más? Escríbeme.", nombre: "Nombre", email: "Correo electrónico", asunto: "Asunto", asuntoOpciones: ["Adquisición de obra", "Colaboración artística", "Inscripción a taller", "Información de talleres", "Joyería artística", "Otro"], mensaje: "Mensaje", btnEnviar: "Enviar mensaje", enviando: "Enviando...", enviado: "¡Mensaje enviado!", errorEnvio: "Error al enviar. Intenta de nuevo.", derechos: "Todos los derechos reservados." },
   },
   en: {
     nav: { inicio: "Home", storytelling: "Story", filosofia: "Philosophy", obra: "Work", galeria: "Gallery", talleres: "Workshops", contacto: "Contact" },
     hero: { titulo: "Laura Cravioto", subtitulo: "Glass sculpture & research", descripcion: "Glass as a territory of exploration where matter transforms, mutates, and breathes with light.", btnObra: "Explore Work", btnTalleres: "Flamework Workshops" },
-    storytelling: { etiqueta: "Storytelling", titulo: "The Liquid Instant", epigrafe: "There is an instant —barely a second— when glass ceases to be solid and is not yet liquid.", epigrafe2: "An instant where matter suspends its own rules.", epigrafe3: "Laura Cravioto works exactly there.", parrafo1: "In a studio in Jalatlaco, Oaxaca, where silence is only broken by the roar of the flame, a glass rod spins between her fingers. The material responds: it stretches, curves, bubbles, breathes. Because glass does not obey — it negotiates.", parrafo2: "And Laura learned to listen.", parrafo3: "Her path began with a question she still hasn't finished answering: what happens when we stop imposing form on matter and begin to converse with it?", parrafo4: "That question led her from drawing to painting, from painting to sculpture, from sculpture to installation.", parrafo5: "Until she found glass.", parrafo6: "A material that holds light within itself. That remembers every gesture of fire. That can appear fragile and be unbreakable." },
+    storytelling: { etiqueta: "Storytelling", titulo: "The Liquid Instant", epigrafe: "There is an instant —barely a second— when glass ceases to be solid and is not yet liquid.", epigrafe2: "An instant where matter suspends its own rules.", epigrafe3: "I work exactly there.", parrafo1: "In a studio in the magical neighborhood of Jalatlaco, in Oaxaca, where silence is only broken by the roar of the flame, a glass rod spins between my fingers. Heat envelops me. The material responds: it stretches, curves, bubbles, breathes. No sketch survives that dialogue intact. Because glass does not obey — it negotiates.", parrafo2: "And I learned to listen.", parrafo3: "My path did not begin in an academy or a furnace. It began with a question I still haven't finished answering: what happens when we stop imposing form on matter and begin to converse with it?", parrafo4: "That question led me from drawing to painting, from painting to sculpture, from sculpture to installation. Each discipline was a new language to formulate the same obsession: understanding how living things grow, mutate, and transform.", parrafo5: "Until I found glass.", parrafo6: "A material that holds light within itself. That remembers every gesture of fire. That can appear fragile and be unbreakable." },
     statement: { etiqueta: "Philosophy", titulo: "Matter as a living organism", parrafo1: "My work unfolds primarily through glass, a material I use as a medium for formal, technical, and conceptual research.", parrafo2: "Through sculpture, installation, and spatial intervention, I construct organic and abstract forms that evoke processes of growth, mutation, adaptation, and permanence.", parrafo3: "Much of my work arises from intersections between the arts, sciences, and natural processes.", caption: "In the studio, working at the flame" },
     proyectos: { etiqueta: "Work", titulo: "Featured Projects", subtitulo: "Sculpture, installation, sculptural jewelry, and spatial intervention.", obras: [{ titulo: "Ecosystem", año: "2024", categoria: "Sculptural installation" }, { titulo: "Symbiosis I", año: "2024", categoria: "Flamework glass sculpture" }, { titulo: "Symbiosis II", año: "2024", categoria: "Flamework glass sculpture" }, { titulo: "Structural Tensions", año: "2023", categoria: "Glass & metal sculpture" }, { titulo: "Memory of Smoke", año: "2023", categoria: "Blown glass" }, { titulo: "Blue Coral", año: "2024", categoria: "Sculptural jewelry" }, { titulo: "Circles of Light", año: "2024", categoria: "Lampwork glass jewelry" }] },
     galeria: { etiqueta: "Gallery", titulo: "Visual Universe", subtitulo: "A journey through process, material, and finished pieces. Click any image to enlarge.", cerrar: "Close", de: "of" },
-    talleres: { etiqueta: "Workshops", titulo: "The Glass Laboratory", subtitulo: "Pedagogy as a fundamental extension of artistic practice.", descripcion: "Flamework workshops are a space for guided experimentation.", items: [{ titulo: "Flame Introduction", desc: "Fundamental lampwork techniques.", duracion: "8 sessions" }, { titulo: "Experimental Sculpture", desc: "Advanced formal exploration.", duracion: "12 sessions" }, { titulo: "Intensive Workshop", desc: "Full weekend immersion.", duracion: "2 days" }], btnInscribirse: "Enroll", btnFechas: "See upcoming dates", galeriaTitulo: "Workshop moments" },
-    contacto: { etiqueta: "Contact", tituloBio: "Biography", bio1: "Laura Cravioto is a Mexican artist whose practice centers on glass as a medium for research and expression.", bio2: "She currently combines artistic production with teaching flamework workshops.", tituloForm: "Collaborations & Inquiries", formDesc: "Interested in acquiring a piece, enrolling in a workshop, or learning more? Write to me.", nombre: "Name", email: "Email", asunto: "Subject", asuntoOpciones: ["Artwork acquisition", "Artistic collaboration", "Workshop enrollment", "Workshop information", "Artistic jewelry", "Other"], mensaje: "Message", btnEnviar: "Send message", enviando: "Sending...", enviado: "Message sent!", errorEnvio: "Error sending. Try again.", derechos: "All rights reserved." },
+    talleres: { etiqueta: "Workshops", titulo: "The Glass Laboratory", subtitulo: "Pedagogy as a fundamental extension of artistic practice.", descripcion: "Flamework workshops are a space for guided experimentation where each participant discovers their own dialogue with the material.", items: [{ titulo: "Flame Introduction", desc: "Fundamental lampwork techniques.", duracion: "8 sessions" }, { titulo: "Experimental Sculpture", desc: "Advanced formal exploration.", duracion: "12 sessions" }, { titulo: "Intensive Workshop", desc: "Full weekend immersion.", duracion: "2 days" }], btnInscribirse: "Enroll", btnFechas: "See upcoming dates", galeriaTitulo: "Workshop moments" },
+    contacto: { etiqueta: "Contact", tituloBio: "Biography", bio1: "I am a Mexican artist whose practice centers on glass as a medium for research and expression. My training has been largely self-taught, built from constant experimentation and continuous learning.", bio2: "I currently combine artistic production with teaching flamework glass workshops. I consider pedagogy a fundamental extension of my work, finding in teaching a way to share knowledge, foster curiosity, and contribute to the formation of new generations of creators.", tituloForm: "Collaborations & Inquiries", formDesc: "Interested in acquiring a piece, enrolling in a workshop, or learning more? Write to me.", nombre: "Name", email: "Email", asunto: "Subject", asuntoOpciones: ["Artwork acquisition", "Artistic collaboration", "Workshop enrollment", "Workshop information", "Artistic jewelry", "Other"], mensaje: "Message", btnEnviar: "Send message", enviando: "Sending...", enviado: "Message sent!", errorEnvio: "Error sending. Try again.", derechos: "All rights reserved." },
   },
   it: {
     nav: { inicio: "Home", storytelling: "Storia", filosofia: "Filosofia", obra: "Opera", galeria: "Galleria", talleres: "Laboratori", contacto: "Contatto" },
-    hero: { titulo: "Laura Cravioto", subtitulo: "Scultura e ricerca nel vetro", descripcion: "Il vetro come territorio di esplorazione.", btnObra: "Esplorare l'Opera", btnTalleres: "Laboratori alla Fiamma" },
-    storytelling: { etiqueta: "Storytelling", titulo: "L'istante liquido", epigrafe: "C'è un istante in cui il vetro smette di essere solido e non è ancora liquido.", epigrafe2: "Un istante in cui la materia sospende le proprie regole.", epigrafe3: "Laura Cravioto lavora esattamente lì.", parrafo1: "In un laboratorio a Jalatlaco, Oaxaca, una bacchetta di vetro gira tra le sue dita. Il materiale risponde.", parrafo2: "E Laura ha imparato ad ascoltarlo.", parrafo3: "Il suo percorso è iniziato con una domanda: cosa succede quando iniziamo a conversare con la materia?", parrafo4: "Quella domanda l'ha portata dal disegno alla scultura, dalla scultura all'installazione.", parrafo5: "Fino a quando ha trovato il vetro.", parrafo6: "Un materiale che custodisce la luce dentro di sé." },
-    statement: { etiqueta: "Filosofia", titulo: "La materia come organismo vivente", parrafo1: "Il mio lavoro si sviluppa attraverso il vetro come mezzo di ricerca.", parrafo2: "Costruisco forme organiche che evocano processi di crescita e mutazione.", parrafo3: "Il vetro è diventato il veicolo principale di questa ricerca.", caption: "Nel laboratorio, alla fiamma" },
-    proyectos: { etiqueta: "Opera", titulo: "Progetti in Evidenza", subtitulo: "Scultura, installazione e gioielleria scultorea.", obras: [{ titulo: "Ecosistema", año: "2024", categoria: "Installazione" }, { titulo: "Simbiosi I", año: "2024", categoria: "Scultura in vetro" }, { titulo: "Simbiosi II", año: "2024", categoria: "Scultura in vetro" }, { titulo: "Tensioni Strutturali", año: "2023", categoria: "Vetro e metallo" }, { titulo: "Memoria del Fumo", año: "2023", categoria: "Vetro soffiato" }, { titulo: "Corallo Blu", año: "2024", categoria: "Gioielleria" }, { titulo: "Cerchi di Luce", año: "2024", categoria: "Gioielli lampwork" }] },
-    galeria: { etiqueta: "Galleria", titulo: "Universo Visivo", subtitulo: "Clicca per ingrandire.", cerrar: "Chiudi", de: "di" },
-    talleres: { etiqueta: "Laboratori", titulo: "Il Laboratorio del Vetro", subtitulo: "La pedagogia come estensione della pratica artistica.", descripcion: "Laboratori di sperimentazione guidata.", items: [{ titulo: "Iniziazione alla Fiamma", desc: "Tecniche fondamentali.", duracion: "8 sessioni" }, { titulo: "Scultura Sperimentale", desc: "Esplorazione avanzata.", duracion: "12 sessioni" }, { titulo: "Laboratorio Intensivo", desc: "Immersione nel fine settimana.", duracion: "2 giorni" }], btnInscribirse: "Iscriversi", btnFechas: "Vedi date", galeriaTitulo: "Momenti nel laboratorio" },
-    contacto: { etiqueta: "Contatto", tituloBio: "Biografia", bio1: "Laura Cravioto è un'artista messicana specializzata nel vetro.", bio2: "Combina produzione artistica con laboratori alla fiamma.", tituloForm: "Collaborazioni", formDesc: "Interessato? Scrivimi.", nombre: "Nome", email: "Email", asunto: "Oggetto", asuntoOpciones: ["Acquisizione", "Collaborazione", "Iscrizione laboratorio", "Info laboratori", "Gioielleria", "Altro"], mensaje: "Messaggio", btnEnviar: "Invia", enviando: "Invio...", enviado: "Inviato!", errorEnvio: "Errore. Riprova.", derechos: "Tutti i diritti riservati." },
+    hero: { titulo: "Laura Cravioto", subtitulo: "Scultura e ricerca nel vetro", descripcion: "Il vetro come territorio di esplorazione dove la materia si trasforma, muta e respira con la luce.", btnObra: "Esplorare l'Opera", btnTalleres: "Laboratori alla Fiamma" },
+    storytelling: { etiqueta: "Storytelling", titulo: "L'istante liquido", epigrafe: "C'è un istante —appena un secondo— in cui il vetro smette di essere solido e non è ancora liquido.", epigrafe2: "Un istante in cui la materia sospende le proprie regole.", epigrafe3: "Lavoro esattamente lì.", parrafo1: "In un laboratorio nel quartiere magico di Jalatlaco, nella città di Oaxaca, dove il silenzio è rotto solo dal ruggito della fiamma, una bacchetta di vetro gira tra le mie dita. Il calore mi avvolge. Il materiale risponde: si allunga, si curva, fa bolle, respira. Nessun bozzetto sopravvive intatto a quel dialogo. Perché il vetro non obbedisce — negozia.", parrafo2: "E ho imparato ad ascoltarlo.", parrafo3: "Il mio percorso non è iniziato in un'accademia né in un forno. È iniziato con una domanda a cui non ho ancora finito di rispondere: cosa succede quando smettiamo di imporre la forma alla materia e iniziamo a conversare con essa?", parrafo4: "Quella domanda mi ha portato dal disegno alla pittura, dalla pittura alla scultura, dalla scultura all'installazione. Ogni disciplina è stata un nuovo linguaggio per formulare la stessa ossessione: capire come cresce, muta e si trasforma il vivente.", parrafo5: "Fino a quando ho trovato il vetro.", parrafo6: "Un materiale che custodisce la luce dentro di sé. Che ricorda ogni gesto del fuoco. Che può sembrare fragile ed essere infrangibile." },
+    statement: { etiqueta: "Filosofia", titulo: "La materia come organismo vivente", parrafo1: "Il mio lavoro si sviluppa principalmente attraverso il vetro, materiale che utilizzo come mezzo di ricerca formale, tecnica e concettuale.", parrafo2: "Attraverso la scultura, l'installazione e l'intervento spaziale, costruisco forme organiche e astratte che evocano processi di crescita, mutazione, adattamento e permanenza.", parrafo3: "Gran parte del mio lavoro nasce dall'incrocio tra le arti, le scienze e i processi naturali. Il vetro è diventato il veicolo principale di questa ricerca.", caption: "Nel laboratorio, lavorando alla fiamma" },
+    proyectos: { etiqueta: "Opera", titulo: "Progetti in Evidenza", subtitulo: "Scultura, installazione, gioielleria scultorea e intervento spaziale.", obras: [{ titulo: "Ecosistema", año: "2024", categoria: "Installazione scultorea" }, { titulo: "Simbiosi I", año: "2024", categoria: "Scultura in vetro alla fiamma" }, { titulo: "Simbiosi II", año: "2024", categoria: "Scultura in vetro alla fiamma" }, { titulo: "Tensioni Strutturali", año: "2023", categoria: "Scultura in vetro e metallo" }, { titulo: "Memoria del Fumo", año: "2023", categoria: "Vetro soffiato" }, { titulo: "Corallo Blu", año: "2024", categoria: "Gioielleria scultorea" }, { titulo: "Cerchi di Luce", año: "2024", categoria: "Gioielli in vetro lampwork" }] },
+    galeria: { etiqueta: "Galleria", titulo: "Universo Visivo", subtitulo: "Un percorso attraverso il processo, la materia e le opere finite. Clicca su un'immagine per ingrandirla.", cerrar: "Chiudi", de: "di" },
+    talleres: { etiqueta: "Laboratori", titulo: "Il Laboratorio del Vetro", subtitulo: "La pedagogia come estensione fondamentale della pratica artistica.", descripcion: "I laboratori di vetro alla fiamma sono uno spazio di sperimentazione guidata dove ogni partecipante scopre il proprio dialogo con la materia.", items: [{ titulo: "Iniziazione alla Fiamma", desc: "Tecniche fondamentali di vetro lampwork.", duracion: "8 sessioni" }, { titulo: "Scultura Sperimentale", desc: "Esplorazione formale avanzata.", duracion: "12 sessioni" }, { titulo: "Laboratorio Intensivo", desc: "Immersione completa nel fine settimana.", duracion: "2 giorni" }], btnInscribirse: "Iscriversi", btnFechas: "Vedi prossime date", galeriaTitulo: "Momenti nel laboratorio" },
+    contacto: { etiqueta: "Contatto", tituloBio: "Biografia", bio1: "Sono un'artista messicana la cui pratica si concentra sul vetro come mezzo di ricerca e espressione. La mia formazione è stata in gran parte autodidatta, costruita dalla sperimentazione costante e dall'apprendimento continuo.", bio2: "Attualmente combino la produzione artistica con l'insegnamento di laboratori di vetro alla fiamma. Considero la pedagogia un'estensione fondamentale del mio lavoro, trovando nell'insegnamento un modo per condividere conoscenze, stimolare la curiosità e contribuire alla formazione di nuove generazioni di creatori.", tituloForm: "Collaborazioni e Richieste", formDesc: "Interessato ad acquisire un'opera, iscriverti a un laboratorio o saperne di più? Scrivimi.", nombre: "Nome", email: "Email", asunto: "Oggetto", asuntoOpciones: ["Acquisizione opera", "Collaborazione artistica", "Iscrizione laboratorio", "Info laboratori", "Gioielleria artistica", "Altro"], mensaje: "Messaggio", btnEnviar: "Invia messaggio", enviando: "Invio in corso...", enviado: "Messaggio inviato!", errorEnvio: "Errore nell'invio. Riprova.", derechos: "Tutti i diritti riservati." },
   },
   fr: {
     nav: { inicio: "Accueil", storytelling: "Histoire", filosofia: "Philosophie", obra: "Œuvres", galeria: "Galerie", talleres: "Ateliers", contacto: "Contact" },
-    hero: { titulo: "Laura Cravioto", subtitulo: "Sculpture et recherche en verre", descripcion: "Le verre comme territoire d'exploration.", btnObra: "Explorer l'Œuvre", btnTalleres: "Ateliers à la Flamme" },
-    storytelling: { etiqueta: "Storytelling", titulo: "L'instant liquide", epigrafe: "Il y a un instant où le verre cesse d'être solide et n'est pas encore liquide.", epigrafe2: "Un instant où la matière suspend ses propres règles.", epigrafe3: "Laura Cravioto travaille exactement là.", parrafo1: "Dans un atelier à Jalatlaco, Oaxaca, une baguette de verre tourne entre ses doigts. Le matériau répond.", parrafo2: "Et Laura a appris à l'écouter.", parrafo3: "Son chemin a commencé par une question : que se passe-t-il quand on commence à converser avec la matière ?", parrafo4: "Cette question l'a menée du dessin à la sculpture, de la sculpture à l'installation.", parrafo5: "Jusqu'à ce qu'elle trouve le verre.", parrafo6: "Un matériau qui garde la lumière en lui." },
-    statement: { etiqueta: "Philosophie", titulo: "La matière comme organisme vivant", parrafo1: "Mon travail se développe à travers le verre comme moyen de recherche.", parrafo2: "Je construis des formes organiques évoquant croissance et mutation.", parrafo3: "Le verre est devenu le véhicule principal de cette quête.", caption: "Dans l'atelier, à la flamme" },
-    proyectos: { etiqueta: "Œuvres", titulo: "Projets en Vedette", subtitulo: "Sculpture, installation et bijoux sculpturaux.", obras: [{ titulo: "Écosystème", año: "2024", categoria: "Installation" }, { titulo: "Symbiose I", año: "2024", categoria: "Sculpture en verre" }, { titulo: "Symbiose II", año: "2024", categoria: "Sculpture en verre" }, { titulo: "Tensions Structurelles", año: "2023", categoria: "Verre et métal" }, { titulo: "Mémoire de Fumée", año: "2023", categoria: "Verre soufflé" }, { titulo: "Corail Bleu", año: "2024", categoria: "Bijou sculptural" }, { titulo: "Cercles de Lumière", año: "2024", categoria: "Bijoux lampwork" }] },
-    galeria: { etiqueta: "Galerie", titulo: "Univers Visuel", subtitulo: "Cliquez pour agrandir.", cerrar: "Fermer", de: "de" },
-    talleres: { etiqueta: "Ateliers", titulo: "Le Laboratoire de Verre", subtitulo: "La pédagogie comme extension de la pratique artistique.", descripcion: "Ateliers d'expérimentation guidée.", items: [{ titulo: "Initiation à la Flamme", desc: "Techniques fondamentales.", duracion: "8 séances" }, { titulo: "Sculpture Expérimentale", desc: "Exploration avancée.", duracion: "12 séances" }, { titulo: "Atelier Intensif", desc: "Immersion le week-end.", duracion: "2 jours" }], btnInscribirse: "S'inscrire", btnFechas: "Voir dates", galeriaTitulo: "Moments dans l'atelier" },
-    contacto: { etiqueta: "Contact", tituloBio: "Biographie", bio1: "Laura Cravioto est une artiste mexicaine spécialisée dans le verre.", bio2: "Elle combine production artistique et enseignement.", tituloForm: "Collaborations", formDesc: "Intéressé ? Écrivez-moi.", nombre: "Nom", email: "Email", asunto: "Sujet", asuntoOpciones: ["Acquisition", "Collaboration", "Inscription atelier", "Info ateliers", "Bijoux", "Autre"], mensaje: "Message", btnEnviar: "Envoyer", enviando: "Envoi...", enviado: "Envoyé !", errorEnvio: "Erreur. Réessayez.", derechos: "Tous droits réservés." },
+    hero: { titulo: "Laura Cravioto", subtitulo: "Sculpture et recherche en verre", descripcion: "Le verre comme territoire d'exploration où la matière se transforme, mute et respire avec la lumière.", btnObra: "Explorer l'Œuvre", btnTalleres: "Ateliers à la Flamme" },
+    storytelling: { etiqueta: "Storytelling", titulo: "L'instant liquide", epigrafe: "Il y a un instant —à peine une seconde— où le verre cesse d'être solide et n'est pas encore liquide.", epigrafe2: "Un instant où la matière suspend ses propres règles.", epigrafe3: "Je travaille exactement là.", parrafo1: "Dans un atelier du quartier magique de Jalatlaco, dans la ville d'Oaxaca, où le silence n'est brisé que par le rugissement de la flamme, une baguette de verre tourne entre mes doigts. La chaleur m'enveloppe. Le matériau répond : il s'étire, se courbe, bouillonne, respire. Aucun croquis ne survit intact à ce dialogue. Car le verre n'obéit pas — il négocie.", parrafo2: "Et j'ai appris à l'écouter.", parrafo3: "Mon chemin n'a pas commencé dans une académie ni dans un four. Il a commencé par une question à laquelle je n'ai toujours pas fini de répondre : que se passe-t-il quand on arrête d'imposer la forme à la matière et qu'on commence à converser avec elle ?", parrafo4: "Cette question m'a menée du dessin à la peinture, de la peinture à la sculpture, de la sculpture à l'installation. Chaque discipline a été un nouveau langage pour formuler la même obsession : comprendre comment le vivant croît, mute et se transforme.", parrafo5: "Jusqu'à ce que je trouve le verre.", parrafo6: "Un matériau qui garde la lumière en lui. Qui se souvient de chaque geste du feu. Qui peut paraître fragile et être incassable." },
+    statement: { etiqueta: "Philosophie", titulo: "La matière comme organisme vivant", parrafo1: "Mon travail se développe principalement à travers le verre, matériau que j'utilise comme moyen de recherche formelle, technique et conceptuelle.", parrafo2: "À travers la sculpture, l'installation et l'intervention spatiale, je construis des formes organiques et abstraites qui évoquent des processus de croissance, de mutation, d'adaptation et de permanence.", parrafo3: "Le verre, par sa capacité à transformer la lumière, à contenir la mémoire et à défier les notions de fragilité et de résistance, est devenu le véhicule principal de cette quête.", caption: "Dans l'atelier, travaillant à la flamme" },
+    proyectos: { etiqueta: "Œuvres", titulo: "Projets en Vedette", subtitulo: "Sculpture, installation, bijoux sculpturaux et intervention spatiale.", obras: [{ titulo: "Écosystème", año: "2024", categoria: "Installation sculpturale" }, { titulo: "Symbiose I", año: "2024", categoria: "Sculpture en verre à la flamme" }, { titulo: "Symbiose II", año: "2024", categoria: "Sculpture en verre à la flamme" }, { titulo: "Tensions Structurelles", año: "2023", categoria: "Sculpture en verre et métal" }, { titulo: "Mémoire de Fumée", año: "2023", categoria: "Verre soufflé" }, { titulo: "Corail Bleu", año: "2024", categoria: "Bijou sculptural" }, { titulo: "Cercles de Lumière", año: "2024", categoria: "Bijoux en verre lampwork" }] },
+    galeria: { etiqueta: "Galerie", titulo: "Univers Visuel", subtitulo: "Un parcours à travers le processus, la matière et les œuvres achevées. Cliquez sur une image pour l'agrandir.", cerrar: "Fermer", de: "de" },
+    talleres: { etiqueta: "Ateliers", titulo: "Le Laboratoire de Verre", subtitulo: "La pédagogie comme extension fondamentale de la pratique artistique.", descripcion: "Les ateliers de verre à la flamme sont un espace d'expérimentation guidée où chaque participant découvre son propre dialogue avec la matière.", items: [{ titulo: "Initiation à la Flamme", desc: "Techniques fondamentales de verre lampwork.", duracion: "8 séances" }, { titulo: "Sculpture Expérimentale", desc: "Exploration formelle avancée.", duracion: "12 séances" }, { titulo: "Atelier Intensif", desc: "Immersion complète le week-end.", duracion: "2 jours" }], btnInscribirse: "S'inscrire", btnFechas: "Voir prochaines dates", galeriaTitulo: "Moments dans l'atelier" },
+    contacto: { etiqueta: "Contact", tituloBio: "Biographie", bio1: "Je suis une artiste mexicaine dont la pratique se concentre sur le verre comme moyen de recherche et d'expression. Ma formation a été en grande partie autodidacte, construite à partir de l'expérimentation constante et de l'apprentissage continu.", bio2: "Je combine actuellement la production artistique avec l'enseignement d'ateliers de verre à la flamme. Je considère la pédagogie comme une extension fondamentale de mon travail, trouvant dans l'enseignement une façon de partager les connaissances, de stimuler la curiosité et de contribuer à la formation de nouvelles générations de créateurs.", tituloForm: "Collaborations et Demandes", formDesc: "Intéressé par l'acquisition d'une œuvre, l'inscription à un atelier ou en savoir plus ? Écrivez-moi.", nombre: "Nom", email: "Email", asunto: "Sujet", asuntoOpciones: ["Acquisition d'œuvre", "Collaboration artistique", "Inscription atelier", "Info ateliers", "Bijoux artistiques", "Autre"], mensaje: "Message", btnEnviar: "Envoyer le message", enviando: "Envoi en cours...", enviado: "Message envoyé !", errorEnvio: "Erreur d'envoi. Réessayez.", derechos: "Tous droits réservés." },
   },
 };
 
-/* ============================================================================
-   BLOQUE 0.2: PALETA DE COLORES
-   ============================================================================ */
 const C = { bh: "#F6F6F4", gc: "#E3E4E6", gmc: "#C7C9CC", gm: "#8E9096", co: "#2F3033" };
 
-/* ============================================================================
-   BLOQUE 0.3: COMPONENTE DE ÍCONO SVG
-   ============================================================================ */
 const Icono = ({ tipo, size = 20 }) => {
   const i = {
     instagram: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>,
@@ -127,31 +133,19 @@ const Icono = ({ tipo, size = 20 }) => {
   return i[tipo] || null;
 };
 
-/* ============================================================================
-   BLOQUE 0.4: IMAGEN CON FALLBACK — CORREGIDO PARA GITHUB PAGES
-   Usa BASE para construir la ruta completa de cada imagen
-   ============================================================================ */
 const Img = ({ src, alt, grad, children }) => {
   const [err, setErr] = useState(false);
   const fullSrc = src ? BASE + src : '';
   return (
     <div style={{ position: "relative", width: "100%", height: "100%", background: grad }}>
       {!err && fullSrc && (
-        <img
-          src={fullSrc}
-          alt={alt}
-          onError={() => setErr(true)}
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 1 }}
-        />
+        <img src={fullSrc} alt={alt} onError={() => setErr(true)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 1 }} />
       )}
       {(err || !fullSrc) && children}
     </div>
   );
 };
 
-/* ============================================================================
-   BLOQUE 0.5: COMPONENTE LIGHTBOX — CORREGIDO PARA GITHUB PAGES
-   ============================================================================ */
 const Lightbox = ({ imagenes, indice, onCerrar, onAnterior, onSiguiente, textosDe }) => {
   useEffect(() => {
     const handleKey = (e) => { if (e.key === "Escape") onCerrar(); if (e.key === "ArrowLeft") onAnterior(); if (e.key === "ArrowRight") onSiguiente(); };
@@ -177,9 +171,6 @@ const Lightbox = ({ imagenes, indice, onCerrar, onAnterior, onSiguiente, textosD
   );
 };
 
-/* ============================================================================
-   COMPONENTE PRINCIPAL: App
-   ============================================================================ */
 export default function App() {
   const [idioma, setIdioma] = useState("es");
   const t = translations[idioma];
@@ -188,14 +179,12 @@ export default function App() {
   const [seccionActiva, setSeccionActiva] = useState("inicio");
   const [formData, setFormData] = useState({ nombre: "", email: "", asunto: "", mensaje: "" });
   const [formEstado, setFormEstado] = useState("idle");
-
   const [lightboxAbierto, setLightboxAbierto] = useState(false);
   const [lightboxIndice, setLightboxIndice] = useState(0);
   const abrirLightbox = (i) => { setLightboxIndice(i); setLightboxAbierto(true); };
   const cerrarLightbox = useCallback(() => setLightboxAbierto(false), []);
   const anteriorImg = useCallback(() => setLightboxIndice((p) => (p - 1 + GALERIA_COMPLETA.length) % GALERIA_COMPLETA.length), []);
   const siguienteImg = useCallback(() => setLightboxIndice((p) => (p + 1) % GALERIA_COMPLETA.length), []);
-
   const seccionesRef = { inicio: useRef(null), storytelling: useRef(null), filosofia: useRef(null), obra: useRef(null), galeria: useRef(null), talleres: useRef(null), contacto: useRef(null) };
 
   useEffect(() => {
@@ -206,14 +195,9 @@ export default function App() {
   const scrollHacia = (s) => { setMenuAbierto(false); seccionesRef[s]?.current?.scrollIntoView({ behavior: "smooth" }); };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setFormEstado("enviando");
+    e.preventDefault(); setFormEstado("enviando");
     try {
-      const response = await fetch(FORMSPREE_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({ nombre: formData.nombre, email: formData.email, asunto: formData.asunto, mensaje: formData.mensaje, _subject: `[Web Laura Cravioto] ${formData.asunto}` }),
-      });
+      const response = await fetch(FORMSPREE_URL, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify({ nombre: formData.nombre, email: formData.email, asunto: formData.asunto, mensaje: formData.mensaje, _subject: `[Web Laura Cravioto] ${formData.asunto}` }) });
       if (response.ok) { setFormEstado("enviado"); setFormData({ nombre: "", email: "", asunto: "", mensaje: "" }); setTimeout(() => setFormEstado("idle"), 4000); }
       else { setFormEstado("error"); setTimeout(() => setFormEstado("idle"), 4000); }
     } catch { setFormEstado("error"); setTimeout(() => setFormEstado("idle"), 4000); }
@@ -221,28 +205,11 @@ export default function App() {
 
   const idiomas = [{ c: "es", e: "ES" }, { c: "en", e: "EN" }, { c: "it", e: "IT" }, { c: "fr", e: "FR" }];
   const ep = { textAlign: "justify", textJustify: "inter-word" };
-  const css = `
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
-    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-    html{scroll-behavior:smooth;font-size:16px}
-    body{font-family:'Inter',-apple-system,sans-serif;color:${C.co};background:${C.bh};-webkit-font-smoothing:antialiased;overflow-x:hidden}
-    @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:${C.bh}}::-webkit-scrollbar-thumb{background:${C.gmc};border-radius:3px}
-    @media(max-width:768px){html{font-size:14px}}
-  `;
+  const css = `@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap');*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;font-size:16px}body{font-family:'Inter',-apple-system,sans-serif;color:${C.co};background:${C.bh};-webkit-font-smoothing:antialiased;overflow-x:hidden}@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:${C.bh}}::-webkit-scrollbar-thumb{background:${C.gmc};border-radius:3px}@media(max-width:768px){html{font-size:14px}}`;
   const go = ["linear-gradient(135deg,#3a3d42,#55585e)", `linear-gradient(135deg,${C.gmc},${C.gm})`, "linear-gradient(135deg,#4a4d52,#6a6d72)", `linear-gradient(145deg,${C.gc},${C.gmc})`, "linear-gradient(135deg,#5a5d62,#3a3d42)", "linear-gradient(160deg,#2F3033,#4a4d52)", `linear-gradient(135deg,${C.gc},#ddd)`];
   const si = { width: "100%", padding: "12px 16px", background: C.bh, border: `1px solid ${C.gmc}`, borderRadius: "3px", fontSize: "0.95rem", color: C.co, fontFamily: "'Inter',sans-serif", outline: "none", transition: "border-color 0.3s" };
   const sl = { display: "block", fontSize: "0.75rem", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: C.gm, marginBottom: "6px" };
-
-  const btnFormConfig = {
-    idle: { bg: C.co, texto: t.contacto.btnEnviar, icono: "arrow" },
-    enviando: { bg: C.gm, texto: t.contacto.enviando, icono: null },
-    enviado: { bg: "#4a7c59", texto: t.contacto.enviado, icono: "check" },
-    error: { bg: "#8c3a3a", texto: t.contacto.errorEnvio, icono: null },
-  }[formEstado];
+  const btnFormConfig = { idle: { bg: C.co, texto: t.contacto.btnEnviar, icono: "arrow" }, enviando: { bg: C.gm, texto: t.contacto.enviando, icono: null }, enviado: { bg: "#4a7c59", texto: t.contacto.enviado, icono: "check" }, error: { bg: "#8c3a3a", texto: t.contacto.errorEnvio, icono: null } }[formEstado];
 
   return (
     <>
@@ -324,7 +291,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* ====== OBRA ====== */}
+      {/* ====== OBRA — 7 piezas principales ====== */}
       <section ref={seccionesRef.obra} style={{ padding: "clamp(4rem,10vw,8rem) clamp(1.5rem,5vw,4rem)", background: C.bh }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <p style={{ fontSize: "0.75rem", fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: C.gm, marginBottom: "1rem" }}>{t.proyectos.etiqueta}</p>
@@ -333,8 +300,8 @@ export default function App() {
           <div className="gm7" style={{ display: "grid", gridTemplateColumns: "repeat(12,1fr)", gridAutoRows: "minmax(160px,auto)", gap: "1rem" }}>
             <style>{`.gm7>.o0{grid-column:1/8;grid-row:1/3}.gm7>.o1{grid-column:8/13;grid-row:1/2}.gm7>.o2{grid-column:8/13;grid-row:2/3}.gm7>.o3{grid-column:1/5;grid-row:3/4}.gm7>.o4{grid-column:5/9;grid-row:3/4}.gm7>.o5{grid-column:9/13;grid-row:3/4}.gm7>.o6{grid-column:1/13;grid-row:4/5;min-height:200px}@media(max-width:768px){.gm7>div[class^="o"]{grid-column:1/-1!important;grid-row:auto!important;min-height:260px!important}}.oc:hover .go{opacity:1!important}.oc:hover .gcc{transform:translateY(0)!important;opacity:1!important}`}</style>
             {t.proyectos.obras.map((obra, index) => (
-              <div key={index} className={`oc o${index}`} onClick={() => abrirLightbox(index + 1)} style={{ position: "relative", borderRadius: "4px", overflow: "hidden", cursor: "pointer", background: go[index] }}>
-                <Img src={IMAGENES.obras[index]?.archivo} alt={IMAGENES.obras[index]?.alt || obra.titulo} grad={go[index]}><div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem", color: "rgba(246,246,244,0.2)" }}>◈</div></Img>
+              <div key={index} className={`oc o${index}`} onClick={() => abrirLightbox(index + 1)} style={{ position: "relative", borderRadius: "4px", overflow: "hidden", cursor: "pointer", background: go[index % go.length] }}>
+                <Img src={IMAGENES.obras[index]?.archivo} alt={IMAGENES.obras[index]?.alt || obra.titulo} grad={go[index % go.length]}><div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem", color: "rgba(246,246,244,0.2)" }}>◈</div></Img>
                 <div className="go" style={{ position: "absolute", inset: 0, background: "rgba(47,48,51,0.55)", backdropFilter: "blur(12px)", opacity: 0, transition: "opacity 0.5s", zIndex: 2, display: "flex", alignItems: "flex-end", padding: "clamp(1.2rem,3vw,2rem)" }}>
                   <div className="gcc" style={{ transform: "translateY(10px)", opacity: 0, transition: "all 0.5s 0.1s" }}>
                     <p style={{ fontSize: "0.7rem", fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: C.gmc, marginBottom: "6px" }}>{obra.categoria}</p>
@@ -348,7 +315,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* ====== GALERÍA ====== */}
+      {/* ====== GALERÍA — 17 imágenes (taller + 16 obras) ====== */}
       <section ref={seccionesRef.galeria} style={{ padding: "clamp(4rem,10vw,8rem) clamp(1.5rem,5vw,4rem)", background: C.gc }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <p style={{ fontSize: "0.75rem", fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: C.gm, marginBottom: "1rem" }}>{t.galeria.etiqueta}</p>
@@ -367,7 +334,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* ====== TALLERES ====== */}
+      {/* ====== TALLERES — 7 fotos reales ====== */}
       <section ref={seccionesRef.talleres} style={{ padding: "clamp(4rem,10vw,8rem) clamp(1.5rem,5vw,4rem)", background: C.bh, borderTop: `1px solid ${C.gc}` }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <p style={{ fontSize: "0.75rem", fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: C.gm, marginBottom: "1rem" }}>{t.talleres.etiqueta}</p>
@@ -386,6 +353,20 @@ export default function App() {
               </div>
             ))}
           </div>
+
+          {/* --- Galería de talleres: 7 fotos reales --- */}
+          <p style={{ fontSize: "0.75rem", fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: C.gm, marginBottom: "1rem" }}>{t.talleres.galeriaTitulo}</p>
+          <div className="ggt" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "0.8rem", marginBottom: "3rem" }}>
+            <style>{`@media(max-width:600px){.ggt{grid-template-columns:repeat(2,1fr)!important}}`}</style>
+            {IMAGENES.talleres.map((img, i) => (
+              <div key={i} style={{ aspectRatio: "1", borderRadius: "4px", overflow: "hidden", background: `linear-gradient(${45 + i * 30}deg,${C.gc},${C.gmc})` }}>
+                <Img src={img.archivo} alt={img.alt} grad={`linear-gradient(${45 + i * 30}deg,${C.gc},${C.gmc})`}>
+                  <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: C.gm, fontSize: "1.5rem", opacity: 0.7 }}>◌</div>
+                </Img>
+              </div>
+            ))}
+          </div>
+
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
             <button onClick={() => scrollHacia("contacto")} style={{ padding: "14px 32px", background: C.co, color: C.bh, border: "none", borderRadius: "2px", fontSize: "0.8rem", fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>{t.talleres.btnInscribirse} <Icono tipo="arrow" size={16} /></button>
             <button onClick={() => scrollHacia("contacto")} style={{ padding: "14px 32px", background: "transparent", color: C.co, border: `1px solid ${C.gmc}`, borderRadius: "2px", fontSize: "0.8rem", fontWeight: 400, letterSpacing: "0.15em", textTransform: "uppercase", cursor: "pointer" }}>{t.talleres.btnFechas}</button>
@@ -421,8 +402,7 @@ export default function App() {
                 <div style={{ marginBottom: "1.2rem" }}><label style={sl}>{t.contacto.asunto}</label><select required value={formData.asunto} onChange={e => setFormData({ ...formData, asunto: e.target.value })} style={{ ...si, cursor: "pointer", appearance: "none" }} onFocus={e => e.target.style.borderColor = C.gm} onBlur={e => e.target.style.borderColor = C.gmc} disabled={formEstado === "enviando"}><option value="">—</option>{t.contacto.asuntoOpciones.map((o, i) => <option key={i} value={o}>{o}</option>)}</select></div>
                 <div style={{ marginBottom: "1.5rem" }}><label style={sl}>{t.contacto.mensaje}</label><textarea required rows={5} value={formData.mensaje} onChange={e => setFormData({ ...formData, mensaje: e.target.value })} style={{ ...si, resize: "vertical" }} onFocus={e => e.target.style.borderColor = C.gm} onBlur={e => e.target.style.borderColor = C.gmc} disabled={formEstado === "enviando"} /></div>
                 <button type="submit" disabled={formEstado === "enviando"} style={{ width: "100%", padding: "14px 32px", background: btnFormConfig.bg, color: C.bh, border: "none", borderRadius: "3px", fontSize: "0.8rem", fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", cursor: formEstado === "enviando" ? "wait" : "pointer", transition: "all 0.3s", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", animation: formEstado === "enviando" ? "pulse 1.5s infinite" : "none" }}>
-                  {btnFormConfig.texto}
-                  {btnFormConfig.icono && <Icono tipo={btnFormConfig.icono} size={16} />}
+                  {btnFormConfig.texto}{btnFormConfig.icono && <Icono tipo={btnFormConfig.icono} size={16} />}
                 </button>
               </form>
             </div>
@@ -430,7 +410,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* ====== FOOTER ====== */}
       <footer style={{ padding: "2rem clamp(1.5rem,5vw,4rem)", background: C.co, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
         <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "1rem", fontWeight: 400, color: C.gmc }}>Laura Cravioto</p>
         <p style={{ fontSize: "0.75rem", fontWeight: 300, color: C.gm }}>© {new Date().getFullYear()} — {t.contacto.derechos}</p>
