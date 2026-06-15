@@ -18,6 +18,7 @@
    ============================================================================ */
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
+const BASE = import.meta.env.BASE_URL;
 
 /* ============================================================================
    BLOQUE 0: CONFIGURACIÓN CENTRAL
@@ -145,10 +146,11 @@ const Icono = ({ tipo, size = 20 }) => {
    ============================================================================ */
 const Img = ({ src, alt, grad, children }) => {
   const [err, setErr] = useState(false);
+  const fullSrc = src ? BASE + src.replace(/^\//, '') : '';
   return (
     <div style={{ position: "relative", width: "100%", height: "100%", background: grad }}>
-      {!err && <img src={src} alt={alt} onError={() => setErr(true)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 1 }} />}
-      {(err || !src) && children}
+      {!err && fullSrc && <img src={fullSrc} alt={alt} onError={() => setErr(true)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 1 }} />}
+      {(err || !fullSrc) && children}
     </div>
   );
 };
@@ -169,7 +171,7 @@ const Lightbox = ({ imagenes, indice, onCerrar, onAnterior, onSiguiente, textosD
       <button onClick={onCerrar} style={{ position: "absolute", top: "1.5rem", right: "1.5rem", background: "none", border: "none", color: C.gmc, cursor: "pointer", zIndex: 10, padding: "8px" }}><Icono tipo="close" size={28} /></button>
       <button onClick={(e) => { e.stopPropagation(); onAnterior(); }} style={{ position: "absolute", left: "clamp(0.5rem,2vw,2rem)", background: "rgba(255,255,255,0.08)", border: "none", color: C.bh, cursor: "pointer", borderRadius: "50%", width: "48px", height: "48px", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10 }}><Icono tipo="chevronL" size={24} /></button>
       <div onClick={(e) => e.stopPropagation()} style={{ maxWidth: "85vw", maxHeight: "80vh", display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
-        <img src={img.archivo} alt={img.alt} style={{ maxWidth: "85vw", maxHeight: "72vh", objectFit: "contain", borderRadius: "4px", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }} />
+        <img src={BASE + img.archivo.replace(/^\//, '')} alt={img.alt} style={{ maxWidth: "85vw", maxHeight: "72vh", objectFit: "contain", borderRadius: "4px", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }} />
         <div style={{ textAlign: "center" }}>
           <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "1.3rem", fontWeight: 400, color: C.bh, marginBottom: "4px" }}>{img.titulo}</p>
           <p style={{ fontSize: "0.75rem", color: C.gm, letterSpacing: "0.1em", textTransform: "uppercase" }}>{img.categoria} — {indice + 1} {textosDe} {imagenes.length}</p>
@@ -373,7 +375,7 @@ export default function App() {
             <style>{`@media(max-width:768px){.gg{grid-template-columns:repeat(2,1fr)!important}}.gt{position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;cursor:pointer;transition:transform 0.3s,box-shadow 0.3s}.gt:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.1)}.gt:first-child{grid-column:span 2;grid-row:span 2;aspect-ratio:auto}@media(max-width:768px){.gt:first-child{grid-column:span 2;grid-row:span 1;aspect-ratio:16/10}}.gt .gt-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(47,48,51,0.6) 0%,transparent 50%);opacity:0;transition:opacity 0.3s;z-index:2;display:flex;align-items:flex-end;padding:1rem}.gt:hover .gt-overlay{opacity:1}`}</style>
             {GALERIA_COMPLETA.map((img, i) => (
               <div key={i} className="gt" onClick={() => abrirLightbox(i)}>
-                <Img src={img.archivo} alt={img.alt} grad={go[i % go.length]}><div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: C.gm, fontSize: "1.5rem" }}>◈</div></Img>
+                <Img src={BASE + img.archivo.replace(/^\//, '')} alt={img.alt} grad={go[i % go.length]}><div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: C.gm, fontSize: "1.5rem" }}>◈</div></Img>
                 <div className="gt-overlay"><div><p style={{ fontSize: "0.65rem", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.gmc, marginBottom: "4px" }}>{img.categoria}</p><p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "1.1rem", fontWeight: 400, color: C.bh }}>{img.titulo}</p></div></div>
                 <div style={{ position: "absolute", top: "8px", right: "8px", background: "rgba(47,48,51,0.4)", borderRadius: "50%", width: "30px", height: "30px", display: "flex", alignItems: "center", justifyContent: "center", color: C.bh, zIndex: 3, opacity: 0.6 }}><Icono tipo="expand" size={14} /></div>
               </div>
