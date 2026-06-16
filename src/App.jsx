@@ -271,9 +271,18 @@ export default function App() {
       {menuAbierto && <div style={{ position: "fixed", top: "70px", left: 0, right: 0, bottom: 0, zIndex: 999, background: "rgba(246,246,244,0.97)", backdropFilter: "blur(30px)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "2rem", animation: "fadeIn 0.3s" }}>{Object.entries(t.nav).map(([k, l]) => <button key={k} onClick={() => scrollHacia(k)} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'Cormorant Garamond',serif", fontSize: "1.8rem", fontWeight: 300, color: seccionActiva === k ? C.co : C.gm }}>{l}</button>)}</div>}
 
       {/* ====== HERO ====== */}
-      <section ref={seccionesRef.inicio} style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden", background: `linear-gradient(135deg,${C.co} 0%,#3a3d42 40%,#4a4d52 100%)` }}>
-        <div style={{ position: "absolute", inset: 0, opacity: 0.15, background: "radial-gradient(ellipse at 20% 50%,rgba(199,201,204,0.4) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(227,228,230,0.3) 0%,transparent 40%)" }} />
-        <div style={{ position: "absolute", width: "clamp(300px,50vw,600px)", height: "clamp(300px,50vw,600px)", borderRadius: "50%", border: "1px solid rgba(199,201,204,0.15)", top: "50%", left: "50%", transform: "translate(-50%,-50%)", animation: "float 8s ease-in-out infinite" }} />
+      <section ref={seccionesRef.inicio} style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+        {/* --- Imagen de fondo --- */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+          <img src={BASE + IMAGENES.portada.archivo} alt={IMAGENES.portada.alt} onError={(e) => { e.target.style.display = 'none'; }} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+        {/* --- Overlay oscuro para legibilidad del texto --- */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(135deg, rgba(47,48,51,0.75) 0%, rgba(58,61,66,0.7) 40%, rgba(74,77,82,0.65) 100%)" }} />
+        {/* --- Decoración: gradientes de vidrio --- */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, opacity: 0.15, background: "radial-gradient(ellipse at 20% 50%,rgba(199,201,204,0.4) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(227,228,230,0.3) 0%,transparent 40%)" }} />
+        {/* --- Círculo decorativo animado --- */}
+        <div style={{ position: "absolute", width: "clamp(300px,50vw,600px)", height: "clamp(300px,50vw,600px)", borderRadius: "50%", border: "1px solid rgba(199,201,204,0.15)", top: "50%", left: "50%", transform: "translate(-50%,-50%)", animation: "float 8s ease-in-out infinite", zIndex: 1 }} />
+        {/* --- Contenido del Hero --- */}
         <div style={{ position: "relative", zIndex: 2, textAlign: "center", padding: "0 clamp(1.5rem,5vw,4rem)", maxWidth: "900px", animation: "fadeInUp 1.2s" }}>
           <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(2.8rem,7vw,5.5rem)", fontWeight: 300, color: C.bh, lineHeight: 1.05, marginBottom: "0.5rem" }}>{t.hero.titulo}</h1>
           <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(1.1rem,2.5vw,1.6rem)", fontWeight: 300, fontStyle: "italic", color: C.gmc, marginBottom: "2rem" }}>{t.hero.subtitulo}</p>
