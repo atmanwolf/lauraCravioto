@@ -21,7 +21,7 @@ const FORMSPREE_URL = `https://formspree.io/f/${FORMSPREE_ID}`;
    BLOQUE 0: IMÁGENES — 14 obras (sin joyería) + 7 talleres
    ============================================================================ */
 const IMAGENES = {
-  portada: { archivo: "Galeria/1_Portada/hero-bg.jpg", alt: "Escultura de vidrio" },
+  portada: { archivo: "Galeria/1_Portada/hero-esfera.png", alt: "Escultura de vidrio" },
   taller: { archivo: "Galeria/2_Filosofia/1 Laura - Taller.jpg", alt: "Laura Cravioto trabajando vidrio a la flama en su taller" },
   obras: [
     { archivo: "Galeria/3_Obra/Laura - Arte 4.jpeg", alt: "Instalación escultórica de múltiples piezas orgánicas de vidrio" },
